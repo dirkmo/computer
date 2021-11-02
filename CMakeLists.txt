@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.11)
 
 include(FetchContent)
 
@@ -42,3 +42,18 @@ FetchContent_Populate(cpu)
 FetchContent_Populate(vga)
 FetchContent_Populate(uart)
 
+# _deps/cpu-src/generic/abh.v
+# _deps/cpu-src/generic/abl.v
+# _deps/cpu-src/generic/alu.v
+# _deps/cpu-src/generic/cpu.v
+# _deps/cpu-src/generic/ctl.v
+# _deps/cpu-src/generic/microcode.v
+# _deps/cpu-src/generic/regfile.v
+# _deps/uart-src/rtl/fifo.v
+# _deps/uart-src/rtl/UartMasterSlave.v
+# _deps/uart-src/rtl/UartProtocol.v
+# _deps/uart-src/rtl/uart_rx.v
+# _deps/uart-src/rtl/uart_tx.v
+# _deps/vga-src/rtl/MonoVgaText.v
+# cpu_async.v
+# MasterShell.v
