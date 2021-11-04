@@ -86,7 +86,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    while(tickcount < 10000 * ts) {
+    reset();
+
+    while(tickcount < 100000 * ts) {
         handle(pCore);
         tick();
     }

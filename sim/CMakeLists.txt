@@ -26,7 +26,8 @@ verilate(simulation TRACE
   VERILATOR_ARGS
     -CFLAGS "-g"
     -trace -O0 -x-assign 0
-    +define+SIM=1 +librescan +libext+.v
+    #+define+SIM=1
+    +librescan +libext+.v
     --top-module MasterShell
     -y ${CMAKE_SOURCE_DIR}/../rtl
     -y ${CMAKE_SOURCE_DIR}/../import/cpu

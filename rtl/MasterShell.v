@@ -55,13 +55,16 @@ reg r_cpumaster_active;
 
 always @(posedge i_clk)
 begin
-    r_cpumaster_active <= 1; // cpu has lowest priority
     r_vgamaster_active <= 0;
     r_uartmaster_active <= 0;
-    if (vgamaster_access) // vga has highest bus priority
-        r_vgamaster_active <= 1;
+    r_cpumaster_active <= 0;
+    if (vgamaster_access)
+        r_vgamaster_active  <= 1; // vga has highest bus priority
     else if (uartmaster_cs)
         r_uartmaster_active <= 1;
+    else
+        r_cpumaster_active  <= 1; // cpu has lowest priority
+
 end
     
 MonoVgaText vga0(
