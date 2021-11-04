@@ -1,5 +1,13 @@
 #!/bin/bash
 
+SED=sed
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo 'MacOS!'
+    SED=gsed
+fi
+
+
+rm -rf import/*
 mkdir -p import/vga import/uart import/cpu
 
 wget -c -P import/uart https://raw.githubusercontent.com/dirkmo/uartmaster/main/rtl/uart_rx.v
@@ -17,7 +25,7 @@ FILES=(regfile.v abh.v microcode.hex ctl.v abl.v cpu.v alu.v microcode.v)
 for f in ${FILES[*]}
 do
     wget -c -P import/cpu https://raw.githubusercontent.com/Arlet/verilog-65C02/main/generic/$f
-    gsed -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
+    $SED -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
 done
 
-gsed -i "s|microcode.hex|$(PWD)/import/cpu/microcode.hex|" import/cpu/microcode.v
+$SED -i "s|microcode.hex|`pwd`/import/cpu/microcode.hex|" import/cpu/microcode.v
