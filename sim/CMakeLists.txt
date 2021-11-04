@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.11)
 
 project(MonoVgaTextSim)
 
-include(FetchContent)
-
 find_package(verilator HINTS $ENV{VERILATOR_ROOT} ${VERILATOR_ROOT})
 if (NOT verilator_FOUND)
   message(FATAL_ERROR "Verilator was not found. Either install it, or set the VERILATOR_ROOT environment variable")
@@ -22,7 +20,6 @@ add_executable(
   sim.cpp
   ${CMAKE_SOURCE_DIR}/../import/vga/IBM_VGA_8x16.c
 )
-
 
 verilate(simulation TRACE
   INCLUDE_DIRS

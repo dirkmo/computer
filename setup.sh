@@ -19,3 +19,5 @@ do
     wget -c -P import/cpu https://raw.githubusercontent.com/Arlet/verilog-65C02/main/generic/$f
     gsed -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
 done
+
+gsed -i "s|microcode.hex|$(PWD)/import/cpu/microcode.hex|" import/cpu/microcode.v
