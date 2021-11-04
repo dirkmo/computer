@@ -14,38 +14,41 @@ set(CMAKE_BUILD_TYPE DEBUG)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}-O0 -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
+include_directories(${CMAKE_SOURCE_DIR}/../import/vga)
+
 # Create a new executable target that will contain all your sources
 add_executable(
   simulation
   sim.cpp
-  IBM_VGA_8x16.c
+  ${CMAKE_SOURCE_DIR}/../import/vga/IBM_VGA_8x16.c
 )
 
 
 verilate(simulation TRACE
   INCLUDE_DIRS
-    ${CMAKE_SOURCE_DIR}/../rtl
-    ${CMAKE_SOURCE_DIR}/../import/cpu
-    ${CMAKE_SOURCE_DIR}/../import/vga
-    ${CMAKE_SOURCE_DIR}/../import/uart
-    VERILATOR_ARGS
+  VERILATOR_ARGS
     -CFLAGS "-g"
     -trace -O0 -x-assign 0
     +define+SIM=1 +librescan +libext+.v
     --top-module MasterShell
+    -y ${CMAKE_SOURCE_DIR}/../rtl
+    -y ${CMAKE_SOURCE_DIR}/../import/cpu
+    -y ${CMAKE_SOURCE_DIR}/../import/vga
+    -y ${CMAKE_SOURCE_DIR}/../import/uart
   SOURCES
-    MasterShell.v
-    UartMasterSlave.v
-    uart_rx.v
-    uart_tx.v
-    UartProtocol.v
-    fifo.v
-    MonoVgaText.v
-    abh.v
-    abl.v
-    alu.v
-    cpu.v
-    ctl.v
-    microcode.v
-    regfile.v
-  )
+    ${CMAKE_SOURCE_DIR}/../rtl/MasterShell.v
+    ${CMAKE_SOURCE_DIR}/../rtl/cpu_async.v
+    ${CMAKE_SOURCE_DIR}/../import/uart/UartMasterSlave.v
+    ${CMAKE_SOURCE_DIR}/../import/uart/uart_rx.v
+    ${CMAKE_SOURCE_DIR}/../import/uart/uart_tx.v
+    ${CMAKE_SOURCE_DIR}/../import/uart/UartProtocol.v
+    ${CMAKE_SOURCE_DIR}/../import/uart/fifo.v
+    ${CMAKE_SOURCE_DIR}/../import/vga/MonoVgaText.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/abh.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/abl.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/alu.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/cpu.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/ctl.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/microcode.v
+    ${CMAKE_SOURCE_DIR}/../import/cpu/regfile.v
+)

@@ -17,7 +17,5 @@ FILES=(regfile.v abh.v microcode.hex ctl.v abl.v cpu.v alu.v microcode.v)
 for f in ${FILES[*]}
 do
     wget -c -P import/cpu https://raw.githubusercontent.com/Arlet/verilog-65C02/main/generic/$f
-    sed -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
+    gsed -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
 done
-
-

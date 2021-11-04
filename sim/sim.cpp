@@ -4,19 +4,32 @@
 #include <unistd.h>
 
 #include "verilated.h"
-#include "verilator/Vtop.h"
+#include <verilated_vcd_c.h>
+
+#include "VMasterShell.h"
+#include "IBM_VGA_8x16.h"
 
 using namespace std;
 
 #define FONT_BASE   0x0000
 #define SCREEN_BASE 0x1000
 
+uint64_t tickcount = 0;
+uint64_t ts = 1000;
 
 VerilatedVcdC *pTrace = NULL;
-Vtop *pCore;
+VMasterShell *pCore;
 
 // note: little endian: lsb first
 uint8_t mem[0x10000]; 
+
+void opentrace(const char *vcdname) {
+    if (!pTrace) {
+        pTrace = new VerilatedVcdC;
+        pCore->trace(pTrace, 99);
+        pTrace->open(vcdname);
+    }
+}
 
 void tick() {
     tickcount += ts;
@@ -51,21 +64,36 @@ void initialize_mem(void) {
     strcpy((char*)&mem[SCREEN_BASE], "Hello, World!");
 }
 
-void handle(Vtop *pCore) {
-    if (pCore->o_ram_cs) {
-        if (pCore->o_ram_we) {
-            mem[pCore->o_ram_addr16] = pCore->o_ram_dat16 & 0xff;
+void handle(VMasterShell *pCore) {
+    if (pCore->o_cs) {
+        if (pCore->o_we) {
+            mem[pCore->o_addr] = pCore->o_dat & 0xff;
         }
     }
-    pCore->i_ram_dat16 = mem[pCore->o_ram_addr16];
+    pCore->i_dat = mem[pCore->o_addr];
 }
 
 int main(int argc, char *argv[]) {
-    atexit(exit_callback);
+    // atexit(exit_callback);
     // signal(SIGINT, sig_handler);
     Verilated::traceEverOn(true);
-    pCore = new Vtop();
-    opentrace("trace.vcd");
+    pCore = new VMasterShell();
+
+    if (argc > 1) {
+        if( string(argv[1]) == "-t" ) {
+            printf("Trace enabled\n");
+            opentrace("trace.vcd");
+        }
+    }
+
+    while(tickcount < 10000 * ts) {
+        handle(pCore);
+        tick();
+    }
+
+    pCore->final();
+    delete pCore;
+
     if (pTrace) {
         pTrace->close();
         delete pTrace;
