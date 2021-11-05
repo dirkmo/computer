@@ -36,6 +36,7 @@ initial begin
     end
     $readmemh("font.mem", mem, 'he000); // TODO: Remove later
     $readmemh("screen.mem", mem, 'hf000); // TODO: Remove later
+    $readmemh("prog.mem", mem, 'h0000); // TODO: Remove later
 end
 
 endmodule
