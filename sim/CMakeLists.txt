@@ -18,8 +18,15 @@ include_directories(${CMAKE_SOURCE_DIR}/../import/vga)
 add_executable(
   simulation
   sim.cpp
+  ${CMAKE_SOURCE_DIR}/../import/vga/vga.cpp
   ${CMAKE_SOURCE_DIR}/../import/vga/IBM_VGA_8x16.c
 )
+
+include_directories(${CMAKE_SOURCE_DIR}/../import/vga/)
+
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+target_link_libraries(simulation PRIVATE ${SDL2_LIBRARIES})
 
 verilate(simulation TRACE
   INCLUDE_DIRS
@@ -28,14 +35,16 @@ verilate(simulation TRACE
     -trace -O0 -x-assign 0
     #+define+SIM=1
     +librescan +libext+.v
-    --top-module MasterShell
+    --top-module System
     -y ${CMAKE_SOURCE_DIR}/../rtl
     -y ${CMAKE_SOURCE_DIR}/../import/cpu
     -y ${CMAKE_SOURCE_DIR}/../import/vga
     -y ${CMAKE_SOURCE_DIR}/../import/uart
   SOURCES
+    ${CMAKE_SOURCE_DIR}/../rtl/System.v
     ${CMAKE_SOURCE_DIR}/../rtl/MasterShell.v
     ${CMAKE_SOURCE_DIR}/../rtl/cpu_async.v
+    ${CMAKE_SOURCE_DIR}/../rtl/Memory.v
     ${CMAKE_SOURCE_DIR}/../import/uart/UartMasterSlave.v
     ${CMAKE_SOURCE_DIR}/../import/uart/uart_rx.v
     ${CMAKE_SOURCE_DIR}/../import/uart/uart_tx.v

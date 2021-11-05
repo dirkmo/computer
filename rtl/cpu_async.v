@@ -13,7 +13,7 @@ module cpu_async(
     input             i_active
 );
 
-wire rdy = i_active && ~i_ack; // TODO: Falsch!
+wire rdy = i_active && i_ack; // TODO: Correct?
 
 wire [15:0] ad;
 always @(posedge i_clk)

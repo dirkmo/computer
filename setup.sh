@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SED=sed
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo 'MacOS!'
@@ -19,7 +21,9 @@ wget -c -P import/uart https://raw.githubusercontent.com/dirkmo/uartmaster/main/
 wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/rtl/MonoVgaText.v
 wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/sim/IBM_VGA_8x16.c
 wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/sim/IBM_VGA_8x16.h
-
+wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/fpga/font.mem
+wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/sim/vga.cpp
+wget -c -P import/vga https://raw.githubusercontent.com/dirkmo/monovgatext/main/sim/vga.h
 
 FILES=(regfile.v abh.v microcode.hex ctl.v abl.v cpu.v alu.v microcode.v)
 for f in ${FILES[*]}

@@ -11,7 +11,9 @@ module System(
 );
 
 wire [15:0] master_addr;
+/* verilator lint_off UNOPTFLAT */
 wire [ 7:0] master_idat;
+/* verilator lint_on UNOPTFLAT */
 wire [ 7:0] master_odat;
 wire        master_we;
 wire        master_cs;
@@ -74,7 +76,7 @@ wire [15:0] mem_addr;
 wire [7:0] mem_odat;
 reg  mem_cs;
 
-Memory #(.DEPTH(16), .WIDTH(8), .INITFILE("test.mem")) mem(
+Memory #(.DEPTH(16), .WIDTH(8) /*, .INITFILE("font.mem")*/) mem(
     .i_clk(i_clk),
     .i_addr(master_addr),
     .i_dat(master_odat),
@@ -84,7 +86,7 @@ Memory #(.DEPTH(16), .WIDTH(8), .INITFILE("test.mem")) mem(
 );
 
 
-// memory map
+// Memory map
 // 0x0000 .. 0xf9ff memory
 // 0xe000 .. 0xefff memory (vga font)
 // 0xf000 .. 0xf95f memory (vga screen)
@@ -117,9 +119,9 @@ assign master_idat =  vgaslave_cs ? vgaslave_odat :
                      uartslave_cs ? uartslave_odat :
                                     mem_odat;
 
-assign master_ack  =  vgaslave_cs ? 1'b1 :
-                     uartslave_cs ? 1'b1 :
-                           mem_cs ? 1'b1 :
+assign master_ack  =  vgaslave_cs ? master_cs :
+                     uartslave_cs ? master_cs :
+                           mem_cs ? master_cs :
                                     1'b0;
 
 endmodule
