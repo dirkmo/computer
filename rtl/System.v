@@ -76,7 +76,7 @@ wire [15:0] mem_addr;
 wire [7:0] mem_odat;
 reg  mem_cs;
 
-Memory #(.DEPTH(16), .WIDTH(8) /*, .INITFILE("font.mem")*/) mem(
+Memory #(.DEPTH(16), .WIDTH(8), .INITFILE("prog.mem")) mem(
     .i_clk(i_clk),
     .i_addr(master_addr),
     .i_dat(master_odat),
