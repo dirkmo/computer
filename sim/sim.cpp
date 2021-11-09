@@ -36,7 +36,7 @@ void opentrace(const char *vcdname) {
 
 void tick() {
     tickcount += ts;
-    if ((tickcount % (ts*2)) == 0) {
+    if ((tickcount % (ts)) == 0) {
         pCore->i_clk = !pCore->i_clk;
     }
     pCore->eval();
@@ -92,12 +92,14 @@ int main(int argc, char *argv[]) {
             if (pCore->System->i_clk) {
                 int ret = vga_handle(pCore->o_pixel&1, !pCore->o_hsync, !pCore->o_vsync);
                 if (ret == -1) {
+                    printf("Exiting due to event\n");
                     break;
                 }
             }
         }
         old_clk = pCore->System->i_clk;
-        if (pTrace && tickcount < 100000 * ts) {
+        if (pTrace && (tickcount > 100000 * ts)) {
+            printf("Time is up\n");
             break;
         }
     }

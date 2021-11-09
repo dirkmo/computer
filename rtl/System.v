@@ -24,6 +24,7 @@ wire [ 7:0] vgaslave_idat;
 wire [ 7:0] vgaslave_odat;
 wire        vgaslave_we;
 reg         vgaslave_cs;
+wire        vgaslave_ack;
 
 wire        uartslave_addr;
 wire [ 7:0] uartslave_idat;
@@ -52,6 +53,7 @@ MasterShell master(
     .i_vgaslave_addr(vgaslave_addr),
     .i_vgaslave_cs(vgaslave_cs),
     .i_vgaslave_we(vgaslave_we),
+    .o_vgaslave_ack(vgaslave_ack),
     .o_hsync(o_hsync),
     .o_vsync(o_vsync),
     .o_pixel(o_pixel),
@@ -98,20 +100,20 @@ Memory #(.DEPTH(16), .WIDTH(8), .INITFILE("prog.mem")) mem(
 //           0xfa13 vga cursor address high byte [11:8]
 
 // slave selects
-always @(*)
+always @(posedge i_clk)
 begin
     if (master_addr >= 16'hfa00 && master_addr < 16'hfa10) begin
-        mem_cs       = 0;
-        uartslave_cs = 1;
-        vgaslave_cs  = 0;
+        mem_cs       <= 0;
+        uartslave_cs <= 1;
+        vgaslave_cs  <= 0;
     end else if (master_addr >= 16'hfa10 && master_addr < 16'hfa20) begin
-        mem_cs       = 0;
-        uartslave_cs = 0;
-        vgaslave_cs  = 1;
+        mem_cs       <= 0;
+        uartslave_cs <= 0;
+        vgaslave_cs  <= 1;
     end else begin
-        mem_cs       = 1;
-        uartslave_cs = 0;
-        vgaslave_cs  = 0;
+        mem_cs       <= 1;
+        uartslave_cs <= 0;
+        vgaslave_cs  <= 0;
     end
 end
 
@@ -119,7 +121,7 @@ assign master_idat =  vgaslave_cs ? vgaslave_odat :
                      uartslave_cs ? uartslave_odat :
                                     mem_odat;
 
-assign master_ack  =  vgaslave_cs ? master_cs :
+assign master_ack  =  vgaslave_cs ? vgaslave_ack :
                      uartslave_cs ? master_cs :
                            mem_cs ? master_cs :
                                     1'b0;

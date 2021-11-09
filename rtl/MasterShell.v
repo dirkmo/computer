@@ -16,6 +16,7 @@ module MasterShell(
     input       [1:0] i_vgaslave_addr,
     input             i_vgaslave_cs,
     input             i_vgaslave_we,
+    output            o_vgaslave_ack,
 
     output            o_hsync,
     output            o_vsync,
@@ -28,7 +29,7 @@ module MasterShell(
     output       o_uartslave_ack,
     input        i_uartslave_we,
     input        i_uartslave_cs,
-    
+
     output       o_uart_int,
     input        i_uart_rx,
     output       o_uart_tx,
@@ -66,21 +67,22 @@ begin
         r_cpumaster_active  <= 1; // cpu has lowest priority
 
 end
-    
+
 MonoVgaText vga0(
     .i_clk(i_clk),
     .i_reset(i_reset),
     // vga bus master
-    .o_vgaram_addr(o_vgamaster_addr),
-    .i_vgaram_dat(i_dat),
-    .o_vgaram_cs(vgamaster_cs),
-    .o_vgaram_access(vgamaster_access),
+    .o_vgamaster_addr(o_vgamaster_addr),
+    .i_vgamaster_dat(i_dat),
+    .o_vgamaster_cs(vgamaster_cs),
+    .o_vgamaster_access(vgamaster_access),
     // vga bus slave
-    .i_dat(i_vgaslave_dat),
-    .o_dat(o_vgaslave_dat),
-    .i_addr(i_vgaslave_addr[1:0]),
-    .i_cs(i_vgaslave_cs),
-    .i_we(i_vgaslave_we),
+    .i_vgaslave_dat(i_vgaslave_dat),
+    .o_vgaslave_dat(o_vgaslave_dat),
+    .i_vgaslave_addr(i_vgaslave_addr[1:0]),
+    .i_vgaslave_cs(i_vgaslave_cs),
+    .i_vgaslave_we(i_vgaslave_we),
+    .o_vgaslave_ack(o_vgaslave_ack),
     .o_hsync(o_hsync),
     .o_vsync(o_vsync),
     .o_pixel(o_pixel)
@@ -142,7 +144,7 @@ assign           o_we =   r_vgamaster_active ? 1'b0 :
                          r_uartmaster_active ? uartmaster_we :
                           r_cpumaster_active ? o_cpumaster_we : 0;
 
-assign           o_cs =   r_vgamaster_active ? vgamaster_cs : 
+assign           o_cs =   r_vgamaster_active ? vgamaster_cs :
                          r_uartmaster_active ? uartmaster_cs :
                           r_cpumaster_active ? 1'b1 : 0;
 

@@ -32,4 +32,6 @@ do
     $SED -i '1i /* verilator lint_off PINMISSING */\n/* verilator lint_off WIDTH */\n/* verilator lint_off CASEOVERLAP */\n/* verilator lint_off CASEINCOMPLETE */' import/cpu/$f
 done
 
+patch -p0 import/cpu/microcode.v rtl/microcode.patch
+
 $SED -i "s|microcode.hex|`pwd`/import/cpu/microcode.hex|" import/cpu/microcode.v
